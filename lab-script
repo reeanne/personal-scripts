@@ -1,0 +1,25 @@
+#!/bin/bash
+
+declare -a name=("pixel" "texel" "line" "ray" "corona" "edge" "graphic" )
+declare -a amount=(44 38 34 40 41 28 12)
+zero=0
+tty= "tty"
+
+for a in {0..5}
+do
+  comp=${name[a]}
+  count=${amount[a]}
+  for i in {1..9}
+  do
+   	echo $comp$zero$i >> temp
+   	timeout 10 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $comp$zero$i 'finger' | sort -gk 3 -r | awk '{if (match($4, "tty") !=  0)  print $2 " " $3}' >> temp
+   	echo > temp
+  done
+  for i in $(seq 10 $count)
+  do
+   	echo $comp$i >> temp
+   	timeout 10 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $comp$i 'finger' | sort -gk 3 -r | awk '{if (match($4, "tty") !=  0)  print $2 " " $3}' >> temp
+   	echo >> temp
+  done
+done
+
